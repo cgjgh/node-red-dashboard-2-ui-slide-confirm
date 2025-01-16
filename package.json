@@ -1,0 +1,73 @@
+{
+    "name": "@cgjgh/node-red-dashboard-2-ui-slide-confirm",
+    "version": "1.0.10",
+    "description": "A Slide to Confirm node for preventing accidental user actions in Node-RED Dashboard 2.0",
+    "keywords": [
+        "node-red",
+        "node-red-dashboard-2",
+        "slide-confirm"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cgjgh/node-red-dashboard-2-ui-slide-confirm.git"
+    },
+    "license": "Apache-2.0",
+    "exports": {
+        "import": "./resources/ui-slide-confirm.esm.js",
+        "require": "./resources/ui-slide-confirm.umd.js"
+    },
+    "files": [
+        "nodes/*",
+        "ui/*",
+        "resources/*"
+    ],
+    "scripts": {
+        "build": "vite build",
+        "build:dev": "NODE_ENV=development vite build",
+        "dev": "NODE_ENV=development vite build --watch",
+        "dev:prod": "vite build --watch",
+        "lint": "npm run lint:js && npm run lint:package",
+        "lint:fix": "npm run lint:js:fix && npm run lint:package:fix",
+        "lint:js": "eslint --ext .js,.vue,.cjs,.mjs .",
+        "lint:js:fix": "yarn lint:js --fix",
+        "lint:package": "sort-package-json --check 'package.json'",
+        "lint:package:fix": "sort-package-json 'package.json'"
+    },
+    "dependencies": {
+        "@j2only/slide-unlock": "^0.5.10",
+        "vue": "^3.3.8",
+        "vuex": "^4.1.0"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue": "^4.5.0",
+        "eslint": "^8.53.0",
+        "eslint-config-standard": "^17.1.0",
+        "eslint-plugin-import": "^2.29.0",
+        "eslint-plugin-n": "^16.3.1",
+        "eslint-plugin-vue": "^9.18.1",
+        "vite": "^5.0.13",
+        "vite-plugin-css-injected-by-js": "^3.3.0",
+        "vite-plugin-static-copy": "^1.0.6"
+    },
+    "engines": {
+        "node": ">=14"
+    },
+    "node-red": {
+        "version": ">=3.0.0",
+        "nodes": {
+            "ui-slide-confirm": "nodes/ui-slide-confirm.js"
+        }
+    },
+    "node-red-dashboard-2": {
+        "version": "1.0.0",
+        "widgets": {
+            "ui-slide-confirm": {
+                "output": "ui-slide-confirm.umd.js",
+                "component": "UISlideConfirm"
+            }
+        }
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

@@ -1,0 +1,230 @@
+<script type="text/javascript">
+    (function () {
+        function hasProperty (obj, prop) {
+            return Object.prototype.hasOwnProperty.call(obj, prop)
+        }
+ 
+        function getWidgetsInGroup (nodeGroup, nodeId) {
+            const uiNodesInGroup = []
+            RED.nodes.eachNode(function (n) {
+                if (/^ui-/.test(n.type) && n.group && n.group === nodeGroup && n.id !== nodeId) {
+                    uiNodesInGroup.push(n)
+                }
+            })
+            return uiNodesInGroup
+        }
+ 
+        function generateWidgetTable (node, group = null) {
+            const nodeGroup = group !== null ? group : node.group
+            const widgets = getWidgetsInGroup(nodeGroup, node.id)
+            let widgetListHtml = '<table class="widget-table"><thead><tr><th>Type</th><th>Name</th><th>Include</th></tr></thead><tbody>'
+            widgets.forEach(widget => {
+                const isChecked = node.controlledWidgets.includes(widget.id) ? 'checked' : ''
+                widgetListHtml += `<tr><td>${widget.type}</td><td>${widget.name}</td><td><input type="checkbox" name="widget" value="${widget.id}" ${isChecked}></td></tr>`
+            })
+            widgetListHtml += '</tbody></table>'
+            $('#node-input-controlledWidgets-container').html(widgetListHtml)
+        }
+ 
+        RED.nodes.registerType('ui-slide-confirm', {
+            category: RED._('@flowfuse/node-red-dashboard/ui-base:ui-base.label.category'),
+            color: RED._('@flowfuse/node-red-dashboard/ui-base:ui-base.colors.dark'),
+            defaults: {
+                group: { type: 'ui-group', required: true },
+                name: { value: '' },
+                label: { value: 'slide-confirm' },
+                order: { value: 0 },
+                width: {
+                    value: 0,
+                    validate: function (v) {
+                        const width = v || 0
+                        const currentGroup = $('#node-input-group').val() || this.group
+                        const groupNode = RED.nodes.node(currentGroup)
+                        const valid = !groupNode || +width >= 0
+                        $('#node-input-size').toggleClass('input-error', !valid)
+                        return valid
+                    }
+                },
+                height: { value: 0 },
+                passthru: { value: false },
+                topic: { value: 'topic', validate: (hasProperty(RED.validators, 'typedInput') ? RED.validators.typedInput('topicType') : function (v) { return true }) },
+                topicType: { value: 'msg' },
+                className: { value: '' },
+                sliderHeight: { value: 50 },
+                textSize: { value: 24 },
+                iconSuccess: { value: 'mdi-check' },
+                text: { value: 'slide to confirm' },
+                successText: { value: 'confirmed' },
+                circle: { value: true },
+                animate: { value: true },
+                timeout: { value: 10 },
+                controlledWidgets: { value: [] }
+            },
+            inputs: 1,
+            outputs: 1,
+            outputLabels: function () {
+                return this.min + ' - ' + this.max
+            },
+            icon: 'font-awesome/fa-check-circle-o',
+            paletteLabel: 'slide confirm',
+            label: function () {
+                return this.name || (~this.label.indexOf('{' + '{') ? null : this.label) || 'slide-confirm'
+            },
+            labelStyle: function () {
+                return this.name ? 'node_label_italic' : ''
+            },
+            oneditprepare: function () {
+                if (RED.nodes.subflow(this.z)) {
+                    $('#node-input-width').attr('type', 'text')
+                    $('#node-input-height').attr('type', 'text')
+                    $('div.form-row.nr-db-ui-element-sizer-row').hide()
+                    $('div.form-row.nr-db-ui-manual-size-row').show()
+                } else {
+                    $('div.form-row.nr-db-ui-element-sizer-row').show()
+                    $('div.form-row.nr-db-ui-manual-size-row').hide()
+                    $('#node-input-size').elementSizer({ width: '#node-input-width', height: '#node-input-height', group: '#node-input-group' })
+                }
+                $('#node-input-topic').typedInput({ default: 'str', typeField: $('#node-input-topicType'), types: ['str', 'msg', 'flow', 'global'] })
+                $('.ui-node-popover-title').tooltip({ show: { effect: 'slideDown', delay: 150 } })
+                const node = this
+                if (!node.controlledWidgets) {
+                    node.controlledWidgets = []
+                }
+                generateWidgetTable(node)
+                $('#node-input-group').on('change', function () {
+                    generateWidgetTable(node, $(this).val())
+                })
+            },
+            oneditsave: function () {
+                const node = this
+                node.controlledWidgets = []
+                $('input[name="widget"]:checked').each(function () {
+                    const o = $(this).val()
+                    node.controlledWidgets.push(o)
+                })
+            }
+        })
+ })()
+ </script>
+ <script type="text/html" data-template-name="ui-slide-confirm">
+         <div class="form-row">
+             <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+             <input type="text" id="node-input-name">
+             <input type="hidden" id="node-input-topicType">
+         </div>
+         <div class="ui-slide-confirm">
+             <div class="form-row">
+                 <label for="node-input-group"><i class="fa fa-table"></i> Group</label>
+                 <input type="text" id="node-input-group">
+             </div>
+             <div class="form-row nr-db-ui-element-sizer-row">
+                 <label><i class="fa fa-object-group"></i> <span data-i18n="ui-slide-confirm.label.size">Size</span></label>
+                 <button class="editor-button" id="node-input-size"></button>
+             </div>
+             <div class="form-row nr-db-ui-manual-size-row">
+                 <label><i class="fa fa-arrows-h"></i> <span data-i18n="ui-slide-confirm.label.width">Width</span></label>
+                 <input type="hidden" id="node-input-width">
+             </div>
+             <div class="form-row nr-db-ui-manual-size-row">
+                 <label><i class="fa fa-arrows-v"></i> <span data-i18n="ui-slide-confirm.label.height">Height</span></label>
+                 <input type="hidden" id="node-input-height">
+             </div>
+             <div class="form-row">
+                 <label for="node-input-className"><i class="fa fa-code"></i> Class</label>
+                 <div style="display: inline;">
+                     <input style="width: 70%;" type="text" id="node-input-className" placeholder="Optional CSS class name(s)" style="flex-grow: 1;">
+                     <a data-html="true" title="Dynamic Property: Send msg.class to append new classes to this widget. NOTE: classes set at runtime will be applied in addition to any class(es) set in the nodes class field." class="red-ui-button ui-node-popover-title" style="margin-left: 4px; cursor: help; font-size: 0.625rem; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; justify-content: center; align-items: center;">
+                         <i style="font-family: ui-serif;">fx</i>
+                     </a>
+                 </div>
+             </div>
+             <div class="form-row">
+                 <label for="node-input-label"><i class="fa fa-font"></i> Label</label>
+                 <input type="text" id="node-input-label">
+             </div>
+             <div class="form-row">
+                 <label for="node-input-sliderHeight"><i class="fa fa-text-height"></i> Slider Height</label>
+                 <input type="number" min="0" max="100" id="node-input-sliderHeight">
+             </div>
+             <div class="form-row">
+                 <label for="node-input-textSize"><i class="fa fa-text-height"></i> Text Height</label>
+                 <input type="number" min="10" max="48" id="node-input-textSize">
+             </div>
+             <div class="form-row">
+                 <label for="node-input-iconSuccess"><i class="fa fa-check-circle-o"></i> Icon Success</label>
+                 <input type="text" id="node-input-iconSuccess">
+             </div>
+           
+             <div class="form-row">
+                 <label for="node-input-text"><i class="fa fa-font"></i> Text</label>
+                 <input type="text" id="node-input-text">
+             </div>
+             <div class="form-row">
+                 <label for="node-input-successText"><i class="fa "></i> Success Text</label>
+                 <input type="text" id="node-input-successText">
+             </div>
+             <div class="form-row">
+                 <label for="node-input-timeout"><i class="fa fa-hourglass-end"></i> Timeout(sec, 0 = no timeout)</label>
+                 <input type="number" min="0" max="60" id="node-input-timeout">
+             </div>
+             <div class="form-row">
+                 <label for="node-input-topic" style="padding-left:25px; margin-right:-25px">Topic</label>
+                 <input type="text" id="node-input-topic">
+             </div>
+             <div class="form-row">
+                 <label for="node-input-circle"><i class="fa fa-circle"></i> Rounded</label>
+                 <input type="checkbox" id="node-input-circle" style="display:inline-block; width:auto; vertical-align:top;">
+             </div>
+             <div class="form-row">
+                 <label for="node-input-animate"><i class="fa fa-play-circle-o"></i> Animate Slider</label>
+                 <input type="checkbox" id="node-input-animate" style="display:inline-block; width:auto; vertical-align:top;">
+             </div>
+             <div class="form-row" style="margin-bottom: 2px;">
+                 <h3 style="margin-bottom: 2px;"> Controlled Widgets</h3>
+             </div>
+             <div class="form-row" style="margin-bottom: 2px;">
+                 <span> From Current Group</span>
+             </div>
+             <div class="form-row widget-container widget-table" id="node-input-controlledWidgets-container"></div>
+         </div>
+     </script>
+ <style id="nr-db2-ui-slide-confirm-styles">
+    .red-ui-editor div.ui-slide-confirm .form-row {
+   display: flex;
+   align-items: center;
+ }
+ 
+ .red-ui-editor div.ui-slide-confirm .form-row label {
+   margin-bottom: 0;
+ }
+ 
+ .red-ui-editor div.ui-slide-confirm .widget-container {
+   width: 100%;
+   box-sizing: border-box;
+   /* Ensures padding and border are included in the element's total width */
+ }
+ 
+ .red-ui-editor .widget-table {
+   width: 100%;
+   border-collapse: collapse; /* Ensures there are no gaps between the table cells */
+ }
+ 
+ .red-ui-editor .widget-table th,
+ .red-ui-editor .widget-table td {
+   padding: 8px;
+   border: 1px solid #ddd; /* Adds a border to table cells */
+   text-align: left; /* Aligns text to the left */
+ }
+ 
+ .red-ui-editor .widget-table td {
+   width: calc(33.333% - 8px); /* Distributes the width evenly among the first two columns */
+ }
+ 
+ .red-ui-editor .widget-table td:last-child {
+   width: 1%; /* Sets the checkbox column width to fit its content */
+   white-space: nowrap; /* Prevents wrapping of checkbox content */
+ }
+ 
+ 
+ 
+ </style>
