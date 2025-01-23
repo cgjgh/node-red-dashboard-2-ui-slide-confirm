@@ -7,7 +7,7 @@
                 @completed="complete"
             />
         </v-col>
-        <v-col v-else cols="2">
+        <v-col v-else cols="2" class="d-flex justify-center align-center">
             <v-progress-circular class="mx-auto" :size="50" :width="10" :model-value="progressValue" color="green">
                 <v-icon>{{ iconSuccess }}</v-icon>
             </v-progress-circular>
