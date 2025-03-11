@@ -87,7 +87,7 @@ export default {
     },
 
     created () {
-        this.$dataTracker(this.id)
+        this.$dataTracker(this.id, this.onInput, this.onLoad, this.onDynamicProperties)
     },
     mounted () {
         this.$socket.emit('widget-load', this.id)
@@ -112,6 +112,22 @@ export default {
             this.updateDynamicProperty('sliderHeight', updates.sliderHeight)
             this.updateDynamicProperty('textSize', updates.textSize)
         },
+        onInput (msg) {
+            // update our vuex store with the value retrieved from Node-RED
+            this.$store.commit('data/bind', {
+                widgetId: this.id,
+                msg
+            })
+            const state = msg.confirmed
+            if (state !== undefined) {
+                if (state === true) {
+                    this.completeComponent()
+                } else {
+                    this.resetComponent()
+                }
+            }
+        },
+
         complete () {
             this.$socket.emit('widget-action', this.id, { payload: 'confirmed' })
             this.isSliderComplete = true
@@ -134,6 +150,11 @@ export default {
             this.isSliderComplete = true
 
             this.updateSlider()
+            if (Number(this.timeout) > 0) {
+                this.countdown = this.timeout
+                this.progressValue = 100
+                this.startCountdown()
+            }
         },
         updateSlider () {
             if (!this.$refs.vueSlideUnlockRef || !this.$refs.vueSlideUnlockRef.Slider) {
