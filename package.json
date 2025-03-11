@@ -1,6 +1,6 @@
 {
     "name": "@cgjgh/node-red-dashboard-2-ui-slide-confirm",
-    "version": "1.0.11",
+    "version": "1.1.0",
     "description": "A Slide to Confirm node for preventing accidental user actions in Node-RED Dashboard 2.0",
     "keywords": [
         "node-red",
