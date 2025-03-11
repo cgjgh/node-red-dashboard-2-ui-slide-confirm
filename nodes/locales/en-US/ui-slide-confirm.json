@@ -1,7 +1,26 @@
 {
-    "ui-slide-confirm" : {
-        "label": {
-            "size": "Size"
-        }
+  "ui-slide-confirm": {
+    "label": {
+      "size": "Size",
+      "width": "Width",
+      "height": "Height",
+      "name": "Name",
+      "group": "Group",
+      "class": "Class",
+      "label": "Label",
+      "sliderHeight": "Slider Height",
+      "textSize": "Text Height",
+      "iconSuccess": "Success Icon",
+      "text": "Text",
+      "successText": "Success Text",
+      "timeout": "Timeout (sec, 0 = no timeout)",
+      "topic": "Topic",
+      "circle": "Rounded",
+      "animate": "Animate Slider",
+      "controlledWidgetsHeader": "Controlled Widgets",
+      "controlledWidgetsFromCurrentGroup": "From Current Group",
+      "tooltipClass": "Dynamic Property: Send msg.class to append new classes to this widget. NOTE: classes set at runtime will be applied in addition to any class(es) set in the node's class field.",
+      "palette": "slide confirm"
     }
+  }
 }
