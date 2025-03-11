@@ -1,0 +1,207 @@
+[
+    {
+        "id": "233218cc5a99e898",
+        "type": "ui-slide-confirm",
+        "z": "c4433a08c01e797b",
+        "group": "09ddb303f3a5ed24",
+        "name": "",
+        "label": "slide-confirm",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "className": "",
+        "sliderHeight": 50,
+        "textSize": 24,
+        "iconSuccess": "mdi-check",
+        "text": "slide to confirm",
+        "successText": "confirmed",
+        "circle": true,
+        "animate": true,
+        "timeout": 10,
+        "controlledWidgets": [
+            "c80a9eb48a753bd9"
+        ],
+        "x": 270,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c80a9eb48a753bd9",
+        "type": "ui-button",
+        "z": "c4433a08c01e797b",
+        "group": "09ddb303f3a5ed24",
+        "name": "Button To Be Controlled",
+        "label": "button",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "emulateClick": false,
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "iconPosition": "left",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "buttonColor": "",
+        "textColor": "",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "x": 250,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "954fa49fe73e509c",
+        "type": "inject",
+        "z": "c4433a08c01e797b",
+        "name": "Confirm",
+        "props": [
+            {
+                "p": "confirmed",
+                "v": "true",
+                "vt": "bool"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 280,
+        "wires": [
+            [
+                "233218cc5a99e898"
+            ]
+        ]
+    },
+    {
+        "id": "204c781dc95427f2",
+        "type": "inject",
+        "z": "c4433a08c01e797b",
+        "name": "Reset",
+        "props": [
+            {
+                "p": "confirmed",
+                "v": "false",
+                "vt": "bool"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 320,
+        "wires": [
+            [
+                "233218cc5a99e898"
+            ]
+        ]
+    },
+    {
+        "id": "09ddb303f3a5ed24",
+        "type": "ui-group",
+        "name": "Group 1",
+        "page": "2df4b254485c987b",
+        "width": 6,
+        "height": 1,
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": true,
+        "disabled": false,
+        "groupType": "default"
+    },
+    {
+        "id": "2df4b254485c987b",
+        "type": "ui-page",
+        "name": "Page 1",
+        "ui": "c51c0fed9c9332d0",
+        "path": "/page1",
+        "icon": "home",
+        "layout": "grid",
+        "theme": "7147e666a7e4f673",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": 0,
+                "cols": 3
+            },
+            {
+                "name": "Tablet",
+                "px": 576,
+                "cols": 6
+            },
+            {
+                "name": "Small Desktop",
+                "px": 768,
+                "cols": 9
+            },
+            {
+                "name": "Desktop",
+                "px": 1024,
+                "cols": 12
+            }
+        ],
+        "order": 1,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "c51c0fed9c9332d0",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true
+    },
+    {
+        "id": "7147e666a7e4f673",
+        "type": "ui-theme",
+        "name": "Default Theme",
+        "colors": {
+            "surface": "#000000",
+            "primary": "#0094ce",
+            "bgPage": "#404040",
+            "groupBg": "#292929",
+            "groupOutline": "#cccccc"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "12px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "12px"
+        }
+    }
+]
